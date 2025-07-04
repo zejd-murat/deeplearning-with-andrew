@@ -7,7 +7,7 @@
 This project uses **Nix** for reproducible development environment management. You'll need:
 
 - **Nix** (with flakes enabled)
-- **devenv** (recommended for automatic environment loading)
+- **devenv**
 
 ## 🚀 Quick Start
 
