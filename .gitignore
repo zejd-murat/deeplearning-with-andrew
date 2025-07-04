@@ -1,0 +1,16 @@
+# LaTeX compilation artifacts
+*.aux
+*.log
+*.pdf
+*.out
+*.toc
+*.bcf
+*.blg
+*.bbl
+*.dvi
+*.fls
+*.fdb_latexmk
+*.run.xml
+
+# Development environment artifacts
+.devenv/ 
