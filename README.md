@@ -11,14 +11,14 @@ This project uses **Nix** for reproducible development environment management. Y
 
 ## 🚀 Quick Start
 
-2. **Enter the development environment**
+1. **Enter the development environment**
    ```bash
    devenv shell
    ```
    
-3. **Compile the PDF**
+2. **Run latexmk**
    ```bash
-   latexmk -pdf main.tex
+   latexmk main.tex
    ```
 
 ## 📖 Compilation
