@@ -13,4 +13,5 @@
 *.run.xml
 
 # Development environment artifacts
-.devenv/ 
+.devenv/
+.devenv.flake.nix 
