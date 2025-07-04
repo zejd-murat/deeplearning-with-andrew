@@ -3,12 +3,12 @@
     let
       version = "1.7.0";
 system = "x86_64-linux";
-devenv_root = "/home/zaid/projects/deeplearning_lab";
+devenv_root = "/home/zaid/projects/deeplearning-with-andrew";
 devenv_dotfile = ./.devenv;
 devenv_dotfile_string = ".devenv";
 container_name = null;
 devenv_tmpdir = "/run/user/1000";
-devenv_runtime = "/run/user/1000/devenv-c67922c";
+devenv_runtime = "/run/user/1000/devenv-affc7c1";
 devenv_istesting = false;
 devenv_direnvrc_latest_version = 1;
 
@@ -26,12 +26,12 @@ devenv_direnvrc_latest_version = 1;
         let
           version = "1.7.0";
 system = "x86_64-linux";
-devenv_root = "/home/zaid/projects/deeplearning_lab";
+devenv_root = "/home/zaid/projects/deeplearning-with-andrew";
 devenv_dotfile = ./.devenv;
 devenv_dotfile_string = ".devenv";
 container_name = null;
 devenv_tmpdir = "/run/user/1000";
-devenv_runtime = "/run/user/1000/devenv-c67922c";
+devenv_runtime = "/run/user/1000/devenv-affc7c1";
 devenv_istesting = false;
 devenv_direnvrc_latest_version = 1;
 
