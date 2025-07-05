@@ -15,7 +15,7 @@
 \usepackage{csquotes}
 
 % Page layout and geometry
-\usepackage[margin=1in, paperheight=18in, paperwidth=8.5in]{geometry}
+\usepackage[margin=1in, paperheight=18.7in, paperwidth=8.5in]{geometry}
 \usepackage{setspace}
 \usepackage{parskip}
 
@@ -29,6 +29,7 @@
 % Graphics and figures
 \usepackage{graphicx}
 \usepackage{tikz}
+\usetikzlibrary{positioning}
 \usepackage{pgfplots}
 \usepackage{subcaption}
 \usepackage{float}
@@ -139,6 +140,20 @@
     colframe=darkgray,
     fonttitle=\bfseries,
     title=Important Formula,
+    rounded corners,
+    boxrule=1pt,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt
+}
+
+% Gradient Computation Box
+\newtcolorbox{gradcomp}{
+    colback=lightgray,
+    colframe=darkgray,
+    fonttitle=\bfseries,
+    title=Gradient Computation,
     rounded corners,
     boxrule=1pt,
     left=8pt,
@@ -444,5 +459,354 @@ We need to learn optimal parameters $\vect{w}$ and $b$ that minimize the predict
 J(\vect{w}, b) = \frac{1}{m} \sum_{i=1}^{m} \mathcal{L}(\hat{y}^{(i)}, y^{(i)})
 \]
 \end{followup}
+
+\vspace{0.4cm}
+
+% ============================================================================
+% GRADIENT DESCENT
+% ============================================================================
+\clearpage
+
+\section{Gradient Descent}
+
+% Option 1: LaTeX-generated 3D plot (complex but self-contained)
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=12cm,
+            height=8cm,
+            xlabel={$w$},
+            ylabel={$b$},
+            zlabel={$J(w,b)$},
+            title={\textbf{Gradient Descent Visualization}},
+            colormap/viridis,
+            view={45}{30},
+            grid=major,
+            samples=20,
+            domain=-2:2,
+            y domain=-2:2,
+        ]
+        
+        % 3D surface (bowl-shaped cost function)
+        \addplot3[
+            surf,
+            opacity=0.7,
+            shader=flat,
+        ] {x^2 + y^2 + 1};
+        
+        % Gradient descent path (example trajectory)
+        \addplot3[
+            mark=*,
+            mark size=2pt,
+            color=red,
+            line width=2pt,
+        ] coordinates {
+            (1.5, 1.5, 5.5)
+            (1.2, 1.2, 3.88)
+            (0.9, 0.9, 2.62)
+            (0.6, 0.6, 1.72)
+            (0.3, 0.3, 1.18)
+            (0.1, 0.1, 1.02)
+            (0.0, 0.0, 1.0)
+        };
+        
+        \end{axis}
+    \end{tikzpicture}
+    \caption{3D visualization of gradient descent on a convex cost function}
+    \label{fig:gradient_descent_3d}
+\end{figure}
+
+% Option 2: External image (uncomment if you prefer to use an image file)
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{gradient_descent_3d.png}
+%     \caption{3D visualization of gradient descent on a convex cost function}
+%     \label{fig:gradient_descent_3d}
+% \end{figure}
+
+\vspace{0.4cm}
+
+\begin{intuition}
+\textbf{3D Surface Plot:}
+\begin{itemize}
+    \item \textbf{Surface:} The bowl-shaped surface represents $J(w,b)$
+    \item \textbf{X-axis:} Parameter $w$ (weight), \textbf{Y-axis:} Parameter $b$ (bias)
+    \item \textbf{Z-axis:} Cost value $J(w,b)$
+    \item \textbf{Red dots:} Gradient descent path - each iteration
+    \item \textbf{Global minimum:} Bottom of the bowl (optimal parameters)
+\end{itemize}
+
+\textbf{Key Insights:}
+\begin{itemize}
+    \item \textbf{Convex function:} Logistic regression cost is bowl-shaped
+    \item \textbf{Guaranteed convergence:} No local minima, only global minimum
+    \item \textbf{Simultaneous updates:} Both $w$ and $b$ updated together
+    \item \textbf{Automatic adjustment:} Steps become smaller near minimum
+\end{itemize}
+\end{intuition}
+
+\vspace{0.4cm}
+
+% 2D visualization showing single parameter case
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=10cm,
+            height=6cm,
+            xlabel={$w$},
+            ylabel={$J(w)$},
+            title={\textbf{Gradient Descent in 1D}},
+            grid=major,
+            samples=100,
+            domain=-3:3,
+            ymin=0,
+            ymax=10,
+        ]
+        
+        % Cost function J(w) = w^2 + 1
+        \addplot[
+            thick,
+            blue,
+            smooth,
+        ] {x^2 + 1};
+        
+        % Gradient descent steps
+        \addplot[
+            mark=*,
+            mark size=3pt,
+            color=purple,
+            line width=2pt,
+        ] coordinates {
+            (2.5, 7.25)
+            (1.8, 4.24)
+            (1.2, 2.44)
+            (0.7, 1.49)
+            (0.3, 1.09)
+            (0.1, 1.01)
+        };
+        
+        % Tangent lines for all gradient descent points
+        % Point 1: (2.5, 7.25), slope = 5
+        \addplot[
+            red,
+            thick,
+            domain=2:3,
+        ] {5*x - 5.25};
+        
+        % Point 2: (1.8, 4.24), slope = 3.6
+        \addplot[
+            red,
+            thick,
+            domain=1.3:2.3,
+        ] {3.6*x - 2.24};
+        
+        % Point 3: (1.2, 2.44), slope = 2.4
+        \addplot[
+            red,
+            thick,
+            domain=0.7:1.7,
+        ] {2.4*x - 0.44};
+        
+        % Point 4: (0.7, 1.49), slope = 1.4
+        \addplot[
+            red,
+            thick,
+            domain=0.2:1.2,
+        ] {1.4*x + 0.51};
+        
+        % Point 5: (0.3, 1.09), slope = 0.6
+        \addplot[
+            red,
+            thick,
+            domain=-0.2:0.8,
+        ] {0.6*x + 0.91};
+        
+        % Point 6: (0.1, 1.01), slope = 0.2
+        \addplot[
+            red,
+            thick,
+            domain=-0.4:0.6,
+        ] {0.2*x + 0.99};
+        
+        \end{axis}
+    \end{tikzpicture}
+    \caption{1D gradient descent showing how algorithm moves toward minimum}
+    \label{fig:gradient_descent_1d}
+\end{figure}
+
+\vspace{0.4cm}
+
+\begin{formula}
+\textbf{Gradient Descent Algorithm:} \\
+\textbf{Update Rules:}
+\begin{align}
+w &:= w - \alpha \frac{\partial J(w,b)}{\partial w} \\
+b &:= b - \alpha \frac{\partial J(w,b)}{\partial b}
+\end{align}
+
+where $\alpha$ is the \textbf{learning rate}.
+
+\textbf{Repeat until convergence:}
+\begin{enumerate}
+    \item Compute the partial derivatives $\frac{\partial J(w,b)}{\partial w}$ and $\frac{\partial J(w,b)}{\partial b}$
+    \item Update parameters simultaneously using the update rules above
+    \item Continue until the cost function converges to minimum
+\end{enumerate}
+\end{formula}
+
+\vspace{0.4cm}
+
+\begin{attention}
+\textbf{Notation Nuances - Important Distinctions:}
+\begin{itemize}
+    \item \textbf{Partial derivative $\frac{\partial J}{\partial w}$:} Used when $J$ is a function of multiple variables ($w$ and $b$)
+    \item \textbf{Regular derivative $\frac{dJ}{dw}$:} Used when $J$ is a function of only one variable ($w$)
+\end{itemize}
+
+\textbf{Code Implementation:}
+\begin{itemize}
+    \item In programming, we use simple variable names: \texttt{dw} and \texttt{db}
+    \item \texttt{dw} represents $\frac{\partial J}{\partial w}$ (partial derivative with respect to $w$) -- ``If we slightly pump up the value of $w$, what happens to $J$?''
+    \item \texttt{db} represents $\frac{\partial J}{\partial b}$ (partial derivative with respect to $b$)
+    \item This avoids the complex mathematical notation in actual code
+\end{itemize}
+\end{attention}
+
+\vspace{0.4cm}
+
+% ============================================================================
+% COMPUTATION GRAPH
+% ============================================================================
+
+\section{Computation Graph}
+
+\begin{keyconcept}
+The computations of a neural network are organized in terms of a \textbf{forward pass} (or forward propagation step) in which we compute the output of the neural network, followed by a \textbf{backward pass} (or backpropagation step) which we use to compute gradients. The computation graph is a way to visualize these computations and enables efficient calculation of derivatives through the chain rule.
+\end{keyconcept}
+
+\vspace{0.4cm}
+
+% Beautiful computation graph using TikZ - Redesigned with proper spacing and hierarchy
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        % Node styles with proper sizing
+        input/.style={draw=primaryblue, fill=lightblue, thick, rounded corners=5pt, minimum width=1.8cm, minimum height=1cm, font=\large},
+        operation/.style={draw=darkgray, fill=lightgray, thick, rounded corners=5pt, minimum width=2.2cm, minimum height=1cm, font=\large},
+        output/.style={draw=accentorange, fill=accentorange!20, thick, rounded corners=5pt, minimum width=2cm, minimum height=1cm, font=\large},
+        computed/.style={fill=secondaryblue!10, draw=secondaryblue, thick, rounded corners=3pt, minimum width=1.5cm, minimum height=0.7cm, font=\normalsize}
+    ]
+    
+    % Layer 1: Input nodes (well-spaced vertically)
+    \node[input] (a) at (0, 2) {$a = 5$};
+    \node[input] (b) at (0, 0) {$b = 3$};
+    \node[input] (c) at (0, -2) {$c = 2$};
+    
+    % Layer 2: First operation (u = bc)
+    \node[operation] (u) at (5, -1) {$u = bc$};
+    \node[computed] (u_val) at (5, -2.5) {$u = 6$};
+    
+    % Layer 3: Second operation (v = a + u)  
+    \node[operation] (v) at (10, 0.5) {$v = a + u$};
+    \node[computed] (v_val) at (10, -1) {$v = 11$};
+    
+    % Layer 4: Final output (J = 3v)
+    \node[output] (J) at (15, 0.5) {$J = 3v$};
+    \node[computed] (J_val) at (15, -1) {$J = 33$};
+    
+    % FORWARD PASS ARROWS (blue, solid) - clean without labels
+    \draw[->, thick, darkblue, line width=1.5pt] (b) -- (u);
+    \draw[->, thick, darkblue, line width=1.5pt] (c) -- (u);
+    \draw[->, thick, darkblue, line width=1.5pt] (u) -- (v);
+    \draw[->, thick, darkblue, line width=1.5pt] (a) to[bend right=10] (v);
+    \draw[->, thick, darkblue, line width=1.5pt] (v) -- (J);
+    
+    % BACKWARD PASS ARROWS (red, dashed) - pointing backward
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (J) -- (v);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (v) -- (u);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (v) to[bend left=10] (a);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (u) -- (b);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (u) -- (c);
+    
+    % Layer labels for clarity
+    \node[above=0.5cm of a, font=\small, text=darkgray] {Inputs};
+    \node[above=0.1cm of u, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial u}=3$};
+    \node[above=0.3cm of v, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial v}=3$};
+    \node[above=0.5cm of J, font=\small, text=darkgray] {Output};
+    
+    % Add derivative labels for all variables
+    \node[below=0.1cm of a, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial a}=3$};
+    \node[below=0.1cm of b, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial b}=6$};
+    \node[below=0.1cm of c, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial c}=9$};
+    
+    \end{tikzpicture}
+    \caption{Computation graph of $J(a,b,c) = 3(a+bc)$ showing forward pass (blue solid) and backward pass (red dashed) with all computed derivatives}
+    \label{fig:computation_graph}
+\end{figure}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Starting with the Output Variable:} \\
+Computing $\frac{\partial J}{\partial v}$: \\
+Since $J = 3v$ and currently $v = 11$, if we increase $v$ by a small amount:
+\begin{itemize}
+    \item $v$ changes from $11$ to $11.001$
+    \item $J$ changes from $33$ to $33.003$
+    \item The increase in $J$ is exactly $3$ times the increase in $v$
+\end{itemize}
+
+Therefore: $\boxed{\frac{\partial J}{\partial v} = 3}$
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Computing $\frac{\partial J}{\partial a}$ using Chain Rule:} \\
+Since $a$ affects $J$ through $v$, we have:
+\[
+\frac{\partial J}{\partial a} = \frac{\partial J}{\partial v} \times \frac{\partial v}{\partial a}
+\]
+
+Breaking this down:
+\begin{itemize}
+    \item $\frac{\partial J}{\partial v} = 3$ (computed above)
+    \item $\frac{\partial v}{\partial a} = 1$ (since $v = a + u$, changing $a$ by 1 unit changes $v$ by 1 unit)
+\end{itemize}
+
+Therefore: $\boxed{\frac{\partial J}{\partial a} = 3 \times 1 = 3}$
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Computing $\frac{\partial J}{\partial u}$:} \\
+Using the chain rule: $\frac{\partial J}{\partial u} = \frac{\partial J}{\partial v} \times \frac{\partial v}{\partial u}$
+
+Since $v = a + u$:
+\[
+\frac{\partial J}{\partial u} = 3 \times 1 = 3
+\]
+
+\textbf{Computing $\frac{\partial J}{\partial b}$:} \\
+$b$ affects $J$ through $u$, then $v$: $\frac{\partial J}{\partial b} = \frac{\partial J}{\partial u} \times \frac{\partial u}{\partial b}$
+
+Since $u = bc$ and $c = 2$:
+\[
+\frac{\partial J}{\partial b} = 3 \times c = 3 \times 2 = 6
+\]
+
+\textbf{Computing $\frac{\partial J}{\partial c}$:} \\
+Similarly: $\frac{\partial J}{\partial c} = \frac{\partial J}{\partial u} \times \frac{\partial u}{\partial c}$
+
+Since $u = bc$ and $b = 3$:
+\[
+\frac{\partial J}{\partial c} = 3 \times b = 3 \times 3 = 9
+\]
+\end{gradcomp}
+
+\vspace{0.4cm}
 
 \end{document} 

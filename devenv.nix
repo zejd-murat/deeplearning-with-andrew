@@ -48,6 +48,14 @@
     plantuml         # UML diagrams
   ];
 
+  # Scripts for common tasks
+  scripts = {
+    build.exec = "pdflatex main.tex && pdflatex main.tex";
+    build-clean.exec = "pdflatex main.tex && pdflatex main.tex && rm -f *.aux *.log *.toc *.out *.fdb_latexmk *.fls *.run.xml *.bcf *.blg *.bbl *.dvi";
+    clean.exec = "rm -f *.aux *.log *.toc *.out *.fdb_latexmk *.fls *.run.xml *.bcf *.blg *.bbl *.dvi *.pdf";
+    watch.exec = "latexmk -pdf -pvc main.tex";
+  };
+
   # Environment variables
   env = {
     TEXMFHOME = ".texmf";
