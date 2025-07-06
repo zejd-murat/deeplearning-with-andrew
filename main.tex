@@ -991,4 +991,72 @@ b &:= b - \alpha \times \texttt{db}
 
 where $\alpha$ is the learning rate.
 \end{formula}
+
+\vspace{0.4cm}
+
+\clearpage
+
+% ============================================================================
+% LOGISTIC REGRESSION - M EXAMPLES
+% ============================================================================
+
+\section{Logistic Regression - m Examples}
+
+\begin{keyconcept}
+\textbf{Scaling to Multiple Training Examples:} \\
+Extending logistic regression from a single example to $m$ training examples requires averaging the gradients computed across all examples. This leads to the fundamental challenge of computational efficiency and the need for vectorization in deep learning.
+\end{keyconcept}
+
+\vspace{0.4cm}
+
+\begin{formula}
+\textbf{Complete Logistic Regression Algorithm - m Examples:} \\
+
+\textbf{FORWARD PASS:} \\
+Initialize parameters: $\vect{w} \in \reals^{n_x}$, $b \in \reals$
+
+For each training example $i = 1, 2, \ldots, m$:
+\begin{align}
+z^{(i)} &= \vect{w}^T \vect{x}^{(i)} + b = \sum_{j=1}^{n_x} w_j x_j^{(i)} + b \\
+a^{(i)} &= \sigma(z^{(i)}) = \frac{1}{1 + e^{-z^{(i)}}} \\
+\mathcal{L}(a^{(i)}, y^{(i)}) &= -(y^{(i)} \log a^{(i)} + (1-y^{(i)}) \log(1-a^{(i)}))
+\end{align}
+
+\textbf{Overall Cost Function:}
+\[
+J(\vect{w}, b) = \frac{1}{m} \sum_{i=1}^{m} \mathcal{L}(a^{(i)}, y^{(i)}) = -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)} \log a^{(i)} + (1-y^{(i)}) \log(1-a^{(i)}) \right]
+\]
+
+\textbf{BACKWARD PASS (Gradient Computation):} \\
+Initialize gradient accumulators: $\texttt{dw}_j = 0$ for $j = 1, \ldots, n_x$, $\texttt{db} = 0$
+
+For each training example $i = 1, 2, \ldots, m$:
+\begin{align}
+\texttt{dz}^{(i)} &= a^{(i)} - y^{(i)} \\
+\texttt{dw}_j &+= x_j^{(i)} \times \texttt{dz}^{(i)} \quad \text{for } j = 1, \ldots, n_x \\
+\texttt{db} &+= \texttt{dz}^{(i)}
+\end{align}
+
+\textbf{Average the gradients:}
+\begin{align}
+\frac{\partial J}{\partial w_j} &= \frac{1}{m} \texttt{dw}_j = \frac{1}{m} \sum_{i=1}^{m} x_j^{(i)} (a^{(i)} - y^{(i)}) \\
+\frac{\partial J}{\partial b} &= \frac{1}{m} \texttt{db} = \frac{1}{m} \sum_{i=1}^{m} (a^{(i)} - y^{(i)})
+\end{align}
+
+\textbf{PARAMETER UPDATES:}
+\begin{align}
+w_j &:= w_j - \alpha \frac{\partial J}{\partial w_j} \quad \text{for } j = 1, \ldots, n_x \\
+b &:= b - \alpha \frac{\partial J}{\partial b}
+\end{align}
+
+\textbf{COMPLETE TRAINING LOOP:} \\
+\textbf{Repeat for} \texttt{num\_iterations}:
+\begin{enumerate}
+    \item Compute forward pass for all $m$ examples
+    \item Compute cost $J(\vect{w}, b)$
+    \item Compute backward pass (gradients) for all $m$ examples
+    \item Update parameters using gradient descent
+\end{enumerate}
+\end{formula}
+
 \end{document} 
