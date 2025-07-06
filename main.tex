@@ -15,7 +15,7 @@
 \usepackage{csquotes}
 
 % Page layout and geometry
-\usepackage[margin=1in, paperheight=18.7in, paperwidth=8.5in]{geometry}
+\usepackage[margin=1in, paperheight=19.5in, paperwidth=8.5in]{geometry}
 \usepackage{setspace}
 \usepackage{parskip}
 
@@ -459,13 +459,11 @@ We need to learn optimal parameters $\vect{w}$ and $b$ that minimize the predict
 J(\vect{w}, b) = \frac{1}{m} \sum_{i=1}^{m} \mathcal{L}(\hat{y}^{(i)}, y^{(i)})
 \]
 \end{followup}
-
-\vspace{0.4cm}
+\clearpage
 
 % ============================================================================
 % GRADIENT DESCENT
 % ============================================================================
-\clearpage
 
 \section{Gradient Descent}
 
@@ -674,8 +672,7 @@ where $\alpha$ is the \textbf{learning rate}.
 \end{itemize}
 \end{attention}
 
-\vspace{0.4cm}
-
+\clearpage
 % ============================================================================
 % COMPUTATION GRAPH
 % ============================================================================
@@ -807,6 +804,191 @@ Since $u = bc$ and $b = 3$:
 \]
 \end{gradcomp}
 
+\clearpage
+% ============================================================================
+% LOGISTIC REGRESSION RECAP - ONE EXAMPLE
+% ============================================================================
+
+\section{Logistic Regression Recap - One Example}
+
+\subsection{Logistic Regression Setup}
+
+\begin{formula}
+\textbf{Logistic Regression Model:} \\
+For a single training example with two features, our model is:
+\begin{align}
+z &= w_1 x_1 + w_2 x_2 + b \quad (\textit{Remember } \colorbox{yellow}{$\vect{w}^T \vect{x}$}\textit{?})\\
+\hat{y} &= a = \sigma(z) = \frac{1}{1 + e^{-z}} \\
+\mathcal{L}(a, y) &= -(y \log a + (1-y) \log(1-a))
+\end{align}
+
+where:
+\begin{itemize}
+    \item $z$ is the linear combination of inputs
+    \item $a$ is the activation (sigmoid output)
+    \item $\mathcal{L}(a, y)$ is the loss function for a single example
+\end{itemize}
+\end{formula}
+
 \vspace{0.4cm}
 
+\subsection{Computation Graph for Logistic Regression}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        % Node styles
+        input/.style={draw=primaryblue, fill=lightblue, thick, rounded corners=5pt, minimum width=1.4cm, minimum height=0.8cm, font=\normalsize},
+        operation/.style={draw=darkgray, fill=lightgray, thick, rounded corners=5pt, minimum width=2.5cm, minimum height=0.8cm, font=\normalsize},
+        output/.style={draw=accentorange, fill=accentorange!20, thick, rounded corners=5pt, minimum width=2cm, minimum height=0.8cm, font=\normalsize},
+        loss/.style={draw=accentred, fill=accentred!20, thick, rounded corners=5pt, minimum width=2cm, minimum height=0.8cm, font=\normalsize}
+    ]
+    
+    % Input features and parameters
+    \node[input] (x1) at (0, 3) {$x_1$};
+    \node[input] (x2) at (0, 1.5) {$x_2$};
+    \node[input] (w1) at (0, 0) {$w_1$};
+    \node[input] (w2) at (0, -1.5) {$w_2$};
+    \node[input] (b) at (0, -3) {$b$};
+    \node[input] (y) at (0, -4.5) {$y$};
+    
+    % Linear combination
+    \node[operation] (z) at (6, 0.75) {$z = w_1x_1 + w_2x_2 + b$};
+    
+    % Sigmoid activation
+    \node[operation] (a) at (12, 0.75) {$a = \sigma(z)$};
+    
+    % Loss function
+    \node[loss] (loss) at (17, 0.75) {$\mathcal{L}(a, y)$};
+    
+    % Forward pass arrows
+    \draw[->, thick, darkblue, line width=1.5pt] (x1) -- (z);
+    \draw[->, thick, darkblue, line width=1.5pt] (x2) -- (z);
+    \draw[->, thick, darkblue, line width=1.5pt] (w1) -- (z);
+    \draw[->, thick, darkblue, line width=1.5pt] (w2) -- (z);
+    \draw[->, thick, darkblue, line width=1.5pt] (b) -- (z);
+    \draw[->, thick, darkblue, line width=1.5pt] (z) -- (a);
+    \draw[->, thick, darkblue, line width=1.5pt] (a) -- (loss);
+    \draw[->, thick, darkblue, line width=1.5pt] (y) to[bend right=20] (loss);
+    
+    % Backward pass arrows (dashed red)
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (loss) -- (a);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (a) -- (z);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (z) -- (w1);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (z) -- (w2);
+    \draw[->, thick, accentred, dashed, line width=1.5pt] (z) -- (b);
+    
+    % Derivative labels
+    \node[above=0.1cm of loss, font=\small\bfseries, text=darkgray] {Forward Pass};
+    \node[below=0.1cm of loss, font=\small\bfseries, text=accentred] {$\frac{\partial \mathcal{L}}{\partial \mathcal{L}} = 1$};
+    \node[above=0.1cm of a, font=\small\bfseries, text=accentred] {$\frac{\partial \mathcal{L}}{\partial a} = da$};
+    \node[above=0.1cm of z, font=\small\bfseries, text=accentred] {$\frac{\partial \mathcal{L}}{\partial z} = dz$};
+    \node[below=0.1cm of w1, font=\small\bfseries, text=accentred] {$dw_1$};
+    \node[below=0.1cm of w2, font=\small\bfseries, text=accentred] {$dw_2$};
+    \node[below=0.1cm of b, font=\small\bfseries, text=accentred] {$db$};
+    
+    \end{tikzpicture}
+    \caption{Computation graph for logistic regression showing forward pass (blue solid) and backward pass (red dashed) with derivative notation}
+    \label{fig:logistic_regression_graph}
+\end{figure}
+
+\clearpage
+\subsection{Computing the Derivatives}
+
+\begin{gradcomp}
+\textbf{Step 1: Computing $\frac{\partial \mathcal{L}}{\partial a}$ (da):} \\
+Starting from the loss function $\mathcal{L}(a, y) = -(y \log a + (1-y) \log(1-a))$:
+
+Taking the derivative with respect to $a$:
+\[
+\frac{\partial \mathcal{L}}{\partial a} = -\frac{y}{a} + \frac{1-y}{1-a}
+\]
+
+\textbf{Code notation:} $\boxed{\texttt{da} = -\frac{y}{a} + \frac{1-y}{1-a}}$
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Step 2: Computing $\frac{\partial \mathcal{L}}{\partial z}$ (dz):} \\
+Using the chain rule: $\frac{\partial \mathcal{L}}{\partial z} = \frac{\partial \mathcal{L}}{\partial a} \times \frac{\partial a}{\partial z}$
+
+Since $a = \sigma(z)$, we have $\frac{\partial a}{\partial z} = a(1-a)$ (sigmoid derivative).
+
+When we multiply:
+\[
+\frac{\partial \mathcal{L}}{\partial z} = \left(-\frac{y}{a} + \frac{1-y}{1-a}\right) \times a(1-a)
+\]
+
+This simplifies to the elegant result:
+\[
+\boxed{\frac{\partial \mathcal{L}}{\partial z} = a - y}
+\]
+
+\textbf{Code notation:} $\boxed{\texttt{dz} = a - y}$
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Step 3: Computing Parameter Derivatives:} \\
+Using the chain rule to compute derivatives with respect to parameters:
+
+\textbf{For $w_1$:} $\frac{\partial \mathcal{L}}{\partial w_1} = \frac{\partial \mathcal{L}}{\partial z} \times \frac{\partial z}{\partial w_1}$
+
+Since $z = w_1 x_1 + w_2 x_2 + b$, we have $\frac{\partial z}{\partial w_1} = x_1$
+\[
+\frac{\partial \mathcal{L}}{\partial w_1} = dz \times x_1 = (a - y) \times x_1
+\]
+
+\textbf{For $w_2$:} Similarly, $\frac{\partial z}{\partial w_2} = x_2$
+\[
+\frac{\partial \mathcal{L}}{\partial w_2} = dz \times x_2 = (a - y) \times x_2
+\]
+
+\textbf{For $b$:} Since $\frac{\partial z}{\partial b} = 1$
+\[
+\frac{\partial \mathcal{L}}{\partial b} = dz \times 1 = (a - y)
+\]
+
+\textbf{Code notation:}
+\begin{align}
+\texttt{dw}_1 &= \boxed{x_1 \times \texttt{dz}} \\
+\texttt{dw}_2 &= \boxed{x_2 \times \texttt{dz}} \\
+\texttt{db} &= \boxed{\texttt{dz}}
+\end{align}
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\subsection{Gradient Descent Update}
+
+\begin{formula}
+\textbf{Single Example Gradient Descent:} \\
+For one training example, perform these updates:
+
+\textbf{Step 1: Forward Pass}
+\begin{align}
+z &= w_1 x_1 + w_2 x_2 + b \\
+a &= \sigma(z) \\
+\mathcal{L} &= -(y \log a + (1-y) \log(1-a))
+\end{align}
+
+\textbf{Step 2: Backward Pass}
+\begin{align}
+\texttt{dz} &= a - y \\
+\texttt{dw}_1 &= x_1 \times \texttt{dz} \\
+\texttt{dw}_2 &= x_2 \times \texttt{dz} \\
+\texttt{db} &= \texttt{dz}
+\end{align}
+
+\textbf{Step 3: Parameter Updates}
+\begin{align}
+w_1 &:= w_1 - \alpha \times \texttt{dw}_1 \\
+w_2 &:= w_2 - \alpha \times \texttt{dw}_2 \\
+b &:= b - \alpha \times \texttt{db}
+\end{align}
+
+where $\alpha$ is the learning rate.
+\end{formula}
 \end{document} 
