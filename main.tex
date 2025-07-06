@@ -1033,8 +1033,8 @@ Initialize gradient accumulators: $\texttt{dw}_j = 0$ for $j = 1, \ldots, n_x$, 
 For each training example $i = 1, 2, \ldots, m$:
 \begin{align}
 \texttt{dz}^{(i)} &= a^{(i)} - y^{(i)} \\
-\texttt{dw}_j &+= x_j^{(i)} \times \texttt{dz}^{(i)} \quad \text{for } j = 1, \ldots, n_x \\
-\texttt{db} &+= \texttt{dz}^{(i)}
+\texttt{dw}_j + &= x_j^{(i)} \times \texttt{dz}^{(i)} \quad \text{for } j = 1, \ldots, n_x \\
+\texttt{db} + &= \texttt{dz}^{(i)}
 \end{align}
 
 \textbf{Average the gradients:}
