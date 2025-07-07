@@ -1,7 +1,7 @@
 # 🧠 Deep Learning Journey Progress
 
 ## 📊 Andrew Ng's Deep Learning Course
-![Course Progress](https://progress-bar.dev/40/?title=Course%20Progress&width=400&color=28a745)
+![Course Progress](https://img.shields.io/badge/Progress-40%25-brightgreen?style=for-the-badge)
 
 **Status**: 40% Complete - Theoretical Foundation ✅  
 **Current Phase**: Hands-on Implementation Practice  
@@ -23,7 +23,7 @@
 ## 🧪 MNIST Implementation Progress
 
 ### 📋 Phase 1: Foundation Setup
-![Foundation](https://progress-bar.dev/25/?title=Foundation&width=300&color=ffc107)
+![Foundation](https://img.shields.io/badge/Foundation-25%25-yellow?style=flat-square)
 
 - [x] ✅ Set up Python development environment
 - [x] ✅ Basic NumPy vectorization concepts (`simple-vectorization.py`)
@@ -32,7 +32,7 @@
 - [ ] 📋 Load and preprocess MNIST dataset
 
 ### 📋 Phase 2: Core Implementation
-![Core](https://progress-bar.dev/0/?title=Core%20Implementation&width=300&color=dc3545)
+![Core Implementation](https://img.shields.io/badge/Core%20Implementation-0%25-red?style=flat-square)
 
 - [ ] 📋 Forward propagation algorithm
 - [ ] 📋 Backpropagation implementation
@@ -41,7 +41,7 @@
 - [ ] 📋 Training loop with mini-batches
 
 ### 📋 Phase 3: Training & Evaluation
-![Training](https://progress-bar.dev/0/?title=Training&width=300&color=6f42c1)
+![Training](https://img.shields.io/badge/Training-0%25-purple?style=flat-square)
 
 - [ ] 📋 Train network on MNIST training set
 - [ ] 📋 Implement accuracy evaluation
