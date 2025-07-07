@@ -677,134 +677,9 @@ where $\alpha$ is the \textbf{learning rate}.
 % COMPUTATION GRAPH
 % ============================================================================
 
-\section{Computation Graph}
-
 \begin{keyconcept}
 The computations of a neural network are organized in terms of a \textbf{forward pass} (or forward propagation step) in which we compute the output of the neural network, followed by a \textbf{backward pass} (or backpropagation step) which we use to compute gradients. The computation graph is a way to visualize these computations and enables efficient calculation of derivatives through the chain rule.
 \end{keyconcept}
-
-\vspace{0.4cm}
-
-% Beautiful computation graph using TikZ - Redesigned with proper spacing and hierarchy
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[
-        % Node styles with proper sizing
-        input/.style={draw=primaryblue, fill=lightblue, thick, rounded corners=5pt, minimum width=1.8cm, minimum height=1cm, font=\large},
-        operation/.style={draw=darkgray, fill=lightgray, thick, rounded corners=5pt, minimum width=2.2cm, minimum height=1cm, font=\large},
-        output/.style={draw=accentorange, fill=accentorange!20, thick, rounded corners=5pt, minimum width=2cm, minimum height=1cm, font=\large},
-        computed/.style={fill=secondaryblue!10, draw=secondaryblue, thick, rounded corners=3pt, minimum width=1.5cm, minimum height=0.7cm, font=\normalsize}
-    ]
-    
-    % Layer 1: Input nodes (well-spaced vertically)
-    \node[input] (a) at (0, 2) {$a = 5$};
-    \node[input] (b) at (0, 0) {$b = 3$};
-    \node[input] (c) at (0, -2) {$c = 2$};
-    
-    % Layer 2: First operation (u = bc)
-    \node[operation] (u) at (5, -1) {$u = bc$};
-    \node[computed] (u_val) at (5, -2.5) {$u = 6$};
-    
-    % Layer 3: Second operation (v = a + u)  
-    \node[operation] (v) at (10, 0.5) {$v = a + u$};
-    \node[computed] (v_val) at (10, -1) {$v = 11$};
-    
-    % Layer 4: Final output (J = 3v)
-    \node[output] (J) at (15, 0.5) {$J = 3v$};
-    \node[computed] (J_val) at (15, -1) {$J = 33$};
-    
-    % FORWARD PASS ARROWS (blue, solid) - clean without labels
-    \draw[->, thick, darkblue, line width=1.5pt] (b) -- (u);
-    \draw[->, thick, darkblue, line width=1.5pt] (c) -- (u);
-    \draw[->, thick, darkblue, line width=1.5pt] (u) -- (v);
-    \draw[->, thick, darkblue, line width=1.5pt] (a) to[bend right=10] (v);
-    \draw[->, thick, darkblue, line width=1.5pt] (v) -- (J);
-    
-    % BACKWARD PASS ARROWS (red, dashed) - pointing backward
-    \draw[->, thick, accentred, dashed, line width=1.5pt] (J) -- (v);
-    \draw[->, thick, accentred, dashed, line width=1.5pt] (v) -- (u);
-    \draw[->, thick, accentred, dashed, line width=1.5pt] (v) to[bend left=10] (a);
-    \draw[->, thick, accentred, dashed, line width=1.5pt] (u) -- (b);
-    \draw[->, thick, accentred, dashed, line width=1.5pt] (u) -- (c);
-    
-    % Layer labels for clarity
-    \node[above=0.5cm of a, font=\small, text=darkgray] {Inputs};
-    \node[above=0.1cm of u, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial u}=3$};
-    \node[above=0.3cm of v, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial v}=3$};
-    \node[above=0.5cm of J, font=\small, text=darkgray] {Output};
-    
-    % Add derivative labels for all variables
-    \node[below=0.1cm of a, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial a}=3$};
-    \node[below=0.1cm of b, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial b}=6$};
-    \node[below=0.1cm of c, font=\small\bfseries, text=accentred] {$\frac{\partial J}{\partial c}=9$};
-    
-    \end{tikzpicture}
-    \caption{Computation graph of $J(a,b,c) = 3(a+bc)$ showing forward pass (blue solid) and backward pass (red dashed) with all computed derivatives}
-    \label{fig:computation_graph}
-\end{figure}
-
-\vspace{0.4cm}
-
-\begin{gradcomp}
-\textbf{Starting with the Output Variable:} \\
-Computing $\frac{\partial J}{\partial v}$: \\
-Since $J = 3v$ and currently $v = 11$, if we increase $v$ by a small amount:
-\begin{itemize}
-    \item $v$ changes from $11$ to $11.001$
-    \item $J$ changes from $33$ to $33.003$
-    \item The increase in $J$ is exactly $3$ times the increase in $v$
-\end{itemize}
-
-Therefore: $\boxed{\frac{\partial J}{\partial v} = 3}$
-\end{gradcomp}
-
-\vspace{0.4cm}
-
-\begin{gradcomp}
-\textbf{Computing $\frac{\partial J}{\partial a}$ using Chain Rule:} \\
-Since $a$ affects $J$ through $v$, we have:
-\[
-\frac{\partial J}{\partial a} = \frac{\partial J}{\partial v} \times \frac{\partial v}{\partial a}
-\]
-
-Breaking this down:
-\begin{itemize}
-    \item $\frac{\partial J}{\partial v} = 3$ (computed above)
-    \item $\frac{\partial v}{\partial a} = 1$ (since $v = a + u$, changing $a$ by 1 unit changes $v$ by 1 unit)
-\end{itemize}
-
-Therefore: $\boxed{\frac{\partial J}{\partial a} = 3 \times 1 = 3}$
-\end{gradcomp}
-
-\vspace{0.4cm}
-
-\begin{gradcomp}
-\textbf{Computing $\frac{\partial J}{\partial u}$:} \\
-Using the chain rule: $\frac{\partial J}{\partial u} = \frac{\partial J}{\partial v} \times \frac{\partial v}{\partial u}$
-
-Since $v = a + u$:
-\[
-\frac{\partial J}{\partial u} = 3 \times 1 = 3
-\]
-
-\textbf{Computing $\frac{\partial J}{\partial b}$:} \\
-$b$ affects $J$ through $u$, then $v$: $\frac{\partial J}{\partial b} = \frac{\partial J}{\partial u} \times \frac{\partial u}{\partial b}$
-
-Since $u = bc$ and $c = 2$:
-\[
-\frac{\partial J}{\partial b} = 3 \times c = 3 \times 2 = 6
-\]
-
-\textbf{Computing $\frac{\partial J}{\partial c}$:} \\
-Similarly: $\frac{\partial J}{\partial c} = \frac{\partial J}{\partial u} \times \frac{\partial u}{\partial c}$
-
-Since $u = bc$ and $b = 3$:
-\[
-\frac{\partial J}{\partial c} = 3 \times b = 3 \times 3 = 9
-\]
-\end{gradcomp}
-
-\clearpage
 % ============================================================================
 % LOGISTIC REGRESSION RECAP - ONE EXAMPLE
 % ============================================================================
@@ -880,7 +755,6 @@ where:
     
     % Derivative labels
     \node[above=0.1cm of loss, font=\small\bfseries, text=darkgray] {Forward Pass};
-    \node[below=0.1cm of loss, font=\small\bfseries, text=accentred] {$\frac{\partial \mathcal{L}}{\partial \mathcal{L}} = 1$};
     \node[above=0.1cm of a, font=\small\bfseries, text=accentred] {$\frac{\partial \mathcal{L}}{\partial a} = da$};
     \node[above=0.1cm of z, font=\small\bfseries, text=accentred] {$\frac{\partial \mathcal{L}}{\partial z} = dz$};
     \node[below=0.1cm of w1, font=\small\bfseries, text=accentred] {$dw_1$};
@@ -1057,6 +931,161 @@ b &:= b - \alpha \frac{\partial J}{\partial b}
     \item Compute backward pass (gradients) for all $m$ examples
     \item Update parameters using gradient descent
 \end{enumerate}
+\end{formula}
+
+\clearpage
+
+% ============================================================================
+% VECTORIZED LOGISTIC REGRESSION
+% ============================================================================
+
+\section{Vectorized Logistic Regression Implementation}
+
+\begin{attention}
+\textbf{The Efficiency Problem:} \\
+The algorithm presented in the previous section requires explicit for loops over all $m$ training examples. In modern deep learning, datasets often contain millions of examples, making nested for loops computationally prohibitive. \textbf{Vectorization} is the key to efficient implementation.
+\end{attention}
+
+\vspace{0.4cm}
+
+\subsection{Matrix Representation Review}
+
+\begin{formula}
+\textbf{Training Data Matrix Representation:} \\
+Recall our matrix definitions:
+\begin{align}
+X &= \begin{bmatrix}
+| & | & & | \\
+\vect{x}^{(1)} & \vect{x}^{(2)} & \cdots & \vect{x}^{(m)} \\
+| & | & & |
+\end{bmatrix} \in \reals^{n_x \times m} \\
+Y &= \begin{bmatrix} y^{(1)} & y^{(2)} & \cdots & y^{(m)} \end{bmatrix} \in \reals^{1 \times m}
+\end{align}
+
+\textbf{Vectorized Forward Propagation:}
+\begin{align}
+Z &= \vect{w}^T X + b = \begin{bmatrix} z^{(1)} & z^{(2)} & \cdots & z^{(m)} \end{bmatrix} \in \reals^{1 \times m} \\
+A &= \sigma(Z) = \begin{bmatrix} a^{(1)} & a^{(2)} & \cdots & a^{(m)} \end{bmatrix} \in \reals^{1 \times m}
+\end{align}
+
+where $\sigma$ is applied element-wise to each component of $Z$.
+\end{formula}
+
+\vspace{0.4cm}
+
+\subsection{Vectorizing Gradient Computations}
+
+\begin{keyconcept}
+\textbf{Key Insight:} \\
+Instead of computing gradients for each training example individually, we can compute them for all examples simultaneously using matrix operations. This eliminates the need for explicit for loops over training examples.
+\end{keyconcept}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Step 1: Computing dZ (Vectorized):} \\
+Previously, we computed individual derivatives:
+\begin{align}
+\texttt{dz}^{(1)} &= a^{(1)} - y^{(1)} \\
+\texttt{dz}^{(2)} &= a^{(2)} - y^{(2)} \\
+&\vdots \\
+\texttt{dz}^{(m)} &= a^{(m)} - y^{(m)}
+\end{align}
+
+\textbf{Vectorized form:} Define $dZ$ as a horizontal stack of all $\texttt{dz}^{(i)}$:
+\[
+dZ = \begin{bmatrix} \texttt{dz}^{(1)} & \texttt{dz}^{(2)} & \cdots & \texttt{dz}^{(m)} \end{bmatrix} \in \reals^{1 \times m}
+\]
+
+Since $A = \begin{bmatrix} a^{(1)} & a^{(2)} & \cdots & a^{(m)} \end{bmatrix}$ and $Y = \begin{bmatrix} y^{(1)} & y^{(2)} & \cdots & y^{(m)} \end{bmatrix}$:
+
+\[
+\boxed{dZ = A - Y}
+\]
+
+\textbf{Result:} One line of code computes all $m$ derivatives simultaneously!
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Step 2: Computing db (Vectorized):} \\
+Previously, we computed:
+\[
+\frac{\partial J}{\partial b} = \frac{1}{m} \sum_{i=1}^{m} \texttt{dz}^{(i)}
+\]
+
+\textbf{Vectorized form:} Since $dZ$ contains all $\texttt{dz}^{(i)}$ values:
+\[
+\boxed{db = \frac{1}{m} \sum(\text{all elements of } dZ) = \frac{1}{m} \text{np.sum}(dZ)}
+\]
+
+\textbf{Implementation:} \texttt{db = (1/m) * np.sum(dZ)}
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\begin{gradcomp}
+\textbf{Step 3: Computing dw (Vectorized):} \\
+Previously, we computed:
+\[
+\frac{\partial J}{\partial w_j} = \frac{1}{m} \sum_{i=1}^{m} x_j^{(i)} \texttt{dz}^{(i)} \quad \text{for } j = 1, \ldots, n_x
+\]
+
+\textbf{Matrix perspective:} We want to compute:
+\[
+d\vect{w} = \frac{1}{m} \sum_{i=1}^{m} \vect{x}^{(i)} \texttt{dz}^{(i)}
+\]
+
+This can be written as a matrix multiplication:
+\[
+d\vect{w} = \frac{1}{m} X \cdot dZ^T
+\]
+
+\textbf{Dimension verification:}
+\begin{itemize}
+    \item $X \in \reals^{n_x \times m}$
+    \item $dZ^T \in \reals^{m \times 1}$ (transpose of $dZ$)
+    \item $X \cdot dZ^T \in \reals^{n_x \times 1}$ $\checkmark$
+\end{itemize}
+
+\[
+\boxed{d\vect{w} = \frac{1}{m} X \cdot dZ^T}
+\]
+
+\textbf{Implementation:} \texttt{dw = (1/m) * np.dot(X, dZ.T)}
+\end{gradcomp}
+
+\vspace{0.4cm}
+
+\subsection{Complete Vectorized Implementation}
+
+\begin{formula}
+\textbf{Vectorized Logistic Regression - Single Iteration:} \\
+
+\textbf{Forward Propagation:}
+\begin{align}
+Z &= \vect{w}^T X + b \quad \text{(broadcasting } b \text{ across columns)} \\
+A &= \sigma(Z) = \frac{1}{1 + e^{-Z}} \quad \text{(element-wise)}
+\end{align}
+
+\textbf{Cost Function:}
+\[
+J = -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)} \log a^{(i)} + (1-y^{(i)}) \log(1-a^{(i)}) \right]
+\]
+
+\textbf{Backward Propagation:}
+\begin{align}
+dZ &= A - Y \\
+d\vect{w} &= \frac{1}{m} X \cdot dZ^T \\
+db &= \frac{1}{m} \sum(dZ)
+\end{align}
+
+\textbf{Parameter Updates:}
+\begin{align}
+\vect{w} &:= \vect{w} - \alpha \cdot d\vect{w} \\
+b &:= b - \alpha \cdot db
+\end{align}
 \end{formula}
 
 \end{document} 

@@ -6,6 +6,7 @@
 
   # Environment packages
   packages = with pkgs; [
+    uv
     # LaTeX environment with all required packages
     (texlive.combine {
       inherit (texlive)
