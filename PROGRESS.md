@@ -18,7 +18,7 @@
 
 ---
 
-TODO:
+## 📝 TODO:
 - [ ] Check out [Kaggle Competition](https://www.kaggle.com/competitions)
 
 **Last Updated**: 2025-07-07  
