@@ -14,9 +14,9 @@
 > **Goal**: Implement MNIST neural network from scratch using pure Python + NumPy to solidify theoretical understanding and gain Python proficiency before tackling Andrew Ng's assignment.
 
 ### 📚 Strategy
-- **Resource**: Nielsen's "Neural Networks and Deep Learning" - Chapter 1
+- **Resource**: [Nielsen's "Neural Networks and Deep Learning" - Chapter 1](http://neuralnetworksanddeeplearning.com/chap1.html)
 - **Language**: Pure Python + NumPy (no frameworks)
 
 ---
 
-**Last Updated**: $(date)  
+**Last Updated**: 2025-07-07  
