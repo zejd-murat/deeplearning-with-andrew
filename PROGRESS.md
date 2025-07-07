@@ -15,7 +15,6 @@
 
 ### 📚 Strategy
 - **Resource**: [Nielsen's "Neural Networks and Deep Learning" - Chapter 1](http://neuralnetworksanddeeplearning.com/chap1.html)
-- **Language**: Pure Python + NumPy (no frameworks)
 
 ---
 
