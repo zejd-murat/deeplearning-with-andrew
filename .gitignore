@@ -15,3 +15,4 @@
 # Development environment artifacts
 .devenv/
 .devenv.flake.nix 
+.pythonic/.venv/
