@@ -1,0 +1,4 @@
+# See https://devenv.sh/reference/yaml-options/
+allowUnfree: true
+
+
