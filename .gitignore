@@ -15,4 +15,5 @@
 # Development environment artifacts
 .devenv/
 .devenv.flake.nix 
-.pythonic/.venv/
+**/.venv/
+**/__pycache__/
