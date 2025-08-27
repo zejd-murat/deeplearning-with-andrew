@@ -1,4 +1,6 @@
+import numpy as np
 import keras
+from .NaiveDense import NaiveDense
 from keras import ops
 from typing import List, Callable, Optional, Union, TypeAlias
 

@@ -2,10 +2,17 @@
 
 {
   languages.python.enable = true;
+  languages.python.version = "3.13";
   languages.python.uv.enable = true;
+  languages.cplusplus.enable = true;
 
   # Environment packages
   packages = with pkgs; [
+    # C++ runtime libraries - ADD THESE
+    gcc-unwrapped.lib
+    glibc
+    stdenv.cc.cc.lib
+    
     # LaTeX environment with all required packages
     (texlive.combine {
       inherit (texlive)
@@ -47,7 +54,6 @@
     graphviz         # ER diagrams
     plantuml         # UML diagrams
 
-
     # CUDA toolkit and libraries
     cudaPackages.cudatoolkit
     cudaPackages.cudnn
@@ -64,11 +70,8 @@
     CUDA_PATH = "${pkgs.cudaPackages.cudatoolkit}";
     CUDA_HOME = "${pkgs.cudaPackages.cudatoolkit}";
     CUDNN_PATH = "${pkgs.cudaPackages.cudnn}";
-    # Updated LD_LIBRARY_PATH to include NVIDIA driver libraries
-    LD_LIBRARY_PATH = "${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib:${pkgs.cudaPackages.libcublas}/lib:${pkgs.cudaPackages.libcufft}/lib:${pkgs.cudaPackages.libcurand}/lib:${pkgs.cudaPackages.libcusolver}/lib:${pkgs.cudaPackages.libcusparse}/lib:${pkgs.linuxPackages.nvidia_x11}/lib";
+    # Updated LD_LIBRARY_PATH to include NVIDIA driver libraries AND C++ runtime
+    LD_LIBRARY_PATH = "${pkgs.gcc-unwrapped.lib}/lib:${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.cudaPackages.cudatoolkit}/lib:${pkgs.cudaPackages.cudnn}/lib:${pkgs.cudaPackages.libcublas}/lib:${pkgs.cudaPackages.libcufft}/lib:${pkgs.cudaPackages.libcurand}/lib:${pkgs.cudaPackages.libcusolver}/lib:${pkgs.cudaPackages.libcusparse}/lib:${pkgs.linuxPackages.nvidia_x11}/lib";
   };
-
 }
-
-
 

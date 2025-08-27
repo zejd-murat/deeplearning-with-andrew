@@ -1,11 +1,12 @@
 import keras
+import numpy as np
 from keras import ops
 from typing import List, Callable, Optional, Union, TypeAlias
 
 KOpsFunc: TypeAlias = Optional[Callable]
 
 class NaiveDense:
-    def __init__(self, input_size: int, output_size: int, activation: KOpsFunc = None):
+    def __init__(self, *, input_size: int, output_size: int, activation: KOpsFunc = None):
         self.activation = activation
         self.W = keras.Variable(
             shape=(input_size, output_size), initializer="uniform")
