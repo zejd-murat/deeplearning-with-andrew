@@ -18,6 +18,7 @@ This project uses **Nix** for reproducible development environment management. Y
    
 2. **Run latexmk**
    ```bash
+   cd course-notes/
    latexmk main.tex
    ```
 
@@ -32,13 +33,15 @@ pdflatex main.tex && pdflatex main.tex
 
 ```
 deeplearning-with-andrew/
-├── main.tex              # Main LaTeX document
-├── main.pdf              # Generated PDF output
+├── course-notes/
+│   ├── main.tex          # Main LaTeX document
+│   ├── main.pdf          # Generated PDF output
+│   └── [LaTeX auxiliary files]
 ├── devenv.nix            # Nix development environment
 ├── devenv.lock           # Nix lock file
 ├── .devenv.flake.nix     # Nix flake configuration
-├── README.md             # This file
-└── [LaTeX auxiliary files]
+├── devenv.yaml           # YAML-based dev environment config
+└── README.md             # This file
 ```
 
 ## 📊 Output

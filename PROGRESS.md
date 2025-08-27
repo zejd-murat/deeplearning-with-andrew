@@ -5,20 +5,17 @@
 
 **Status**: 40% Complete - Theoretical Foundation ✅  
 **Current Phase**: Hands-on Implementation Practice  
-**Official Assignment**: 📋 On Hold (until further Python familiarity)
+**Official Assignment**: 📋 Unsolved, Coursera.org seems to have locked me out of it.
 
 ---
 
-## 🎯 Current Mission: MNIST from Scratch (Python Mastery)
+## 🎯 Current Mission: Deep Learning with Python, Third Edition MEAP V03 (François Chollet, Matthew Watson)
 
-> **Goal**: Implement MNIST neural network from scratch using pure Python + NumPy to solidify theoretical understanding and gain Python proficiency before tackling Andrew Ng's assignment.
-
-### 📚 Strategy
-- **Resource**: [Nielsen's "Neural Networks and Deep Learning" - Chapter 1](http://neuralnetworksanddeeplearning.com/chap1.html)
+![Progress](https://img.shields.io/badge/Progress-10%25-brightgreen?style=for-the-badge)
 
 ---
 
 ## 📝 TODO:
 - [ ] Check out [Kaggle Competition](https://www.kaggle.com/competitions)
 
-**Last Updated**: 2025-07-07  
+**Last Updated**: 2025-08-27  
